@@ -1,0 +1,35 @@
+name: smartcampus
+
+services:
+  backend:
+    build: .
+    image: smartcampus
+    container_name: smartcampus-backend
+    restart: unless-stopped
+    environment:
+      APP_ENV: ${APP_ENV:-production}
+      HOST: 0.0.0.0
+      PORT: ${PORT:-5000}
+      DB_PATH: /data/smartcampus.db
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-2}
+      SECRET_KEY: ${SECRET_KEY:?define SECRET_KEY en .env}
+    ports:
+      - "${HOST_PORT:-5000}:${PORT:-5000}"
+    volumes:
+      - smartcampus-data:/data
+    networks:
+      - smartcampus-net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os,urllib.request as u; u.urlopen('http://127.0.0.1:%s/health' % os.environ['PORT'], timeout=2)"]
+      interval: 15s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+
+networks:
+  smartcampus-net:
+    name: smartcampus-net
+
+volumes:
+  smartcampus-data:
