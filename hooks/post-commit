@@ -1,0 +1,10 @@
+#!/bin/sh
+# post-commit: registra autor, fecha, hash corto y mensaje en commit-log.txt (ignorado por git).
+ROOT="$(git rev-parse --show-toplevel)"
+{
+    echo "Autor:   $(git log -1 --format=%an)"
+    echo "Fecha:   $(git log -1 --format=%ad --date=iso)"
+    echo "Hash:    $(git log -1 --format=%h)"
+    echo "Mensaje: $(git log -1 --format=%s)"
+    echo "----"
+} >> "$ROOT/commit-log.txt"

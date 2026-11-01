@@ -1,0 +1,9 @@
+#!/bin/sh
+# pre-push: tests unitarios e integracion. Bloquea el push si fallan.
+. "$(dirname "$0")/_common.sh"
+
+if ! "$PY" -m pytest -m unit -q || ! "$PY" -m pytest -m integration -q; then
+    echo "❌ Push rechazado: existen tests fallidos"
+    exit 1
+fi
+echo "✅ Todos los tests superados"
