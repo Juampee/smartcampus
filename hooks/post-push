@@ -1,0 +1,10 @@
+#!/bin/sh
+# post-push: Git NO tiene hook post-push nativo. Este script lo invoca el alias 'git pushp'
+# (ver scripts/install-hooks.*) solo cuando 'git push' termina con exito.
+ROOT="$(git rev-parse --show-toplevel)"
+echo "🚀 Cambios enviados correctamente al repositorio remoto."
+{
+    echo "ultimo_push=$(date '+%Y-%m-%d %H:%M:%S')"
+    echo "rama=$(git rev-parse --abbrev-ref HEAD)"
+    echo "commit=$(git rev-parse --short HEAD)"
+} > "$ROOT/.push-info"

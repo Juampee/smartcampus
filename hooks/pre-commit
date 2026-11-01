@@ -1,0 +1,16 @@
+#!/bin/sh
+# pre-commit: calidad (ruff) + tests unitarios. Rechaza el commit si algo falla.
+. "$(dirname "$0")/_common.sh"
+
+echo "🔍 pre-commit: ruff (calidad y formato)..."
+if ! "$PY" -m ruff check . || ! "$PY" -m ruff format --check .; then
+    echo "❌ Commit rechazado: ruff encontro problemas (usa 'ruff format .' y 'ruff check --fix .')"
+    exit 1
+fi
+
+echo "🧪 pre-commit: pytest -m unit..."
+if ! "$PY" -m pytest -m unit -q; then
+    echo "❌ Commit rechazado: fallan los tests unitarios"
+    exit 1
+fi
+echo "✅ pre-commit correcto"
