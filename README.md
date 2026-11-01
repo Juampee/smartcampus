@@ -153,6 +153,6 @@ Capturas de pantalla (a anadir manualmente en `docs/evidencias/capturas/`):
 
 - [x] `pipeline-verde.png`: pestana Actions con el pipeline en verde.
 - [x] `matrix.png`: jobs de la matrix (Python 3.11 y 3.12).
-- [ ] `secrets.png`: Settings > Secrets con `SECRET_KEY` (sin mostrar el valor).
-- [ ] `runner.png`: Settings > Actions > Runners con el runner online.
+- [x] `secrets.png`: Settings > Secrets con `SECRET_KEY` (sin mostrar el valor).
+- [x] `runner.png`: Settings > Actions > Runners con el runner online.
 - [x] `app-desplegada.png`: `http://localhost:5000/health` en el navegador / `docker compose ps`.
