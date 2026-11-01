@@ -1,0 +1,17 @@
+# Run https://github.com/Juampee/smartcampus/actions/runs/41323570801
+- Despliegue (self-hosted): success
+- Calidad y tests (Python 3.12): success
+- Build y validacion de la imagen Docker: success
+- Calidad y tests (Python 3.11): success
+
+# Secret enmascarado en el log (paso Crear .env):
+2026-11-01T16:00:33.7479176Z   SECRET_KEY: ***
+2026-11-01T16:00:39.5692556Z   SECRET_KEY: ***
+
+# Runner
+smartcampus-local online
+
+# Contenedor desplegado
+smartcampus-backend Up 40 seconds (healthy) 0.0.0.0:5000->5000/tcp, [::]:5000->5000/tcp
+{"env":"production","status":"ok"}
+
