@@ -1,0 +1,120 @@
+name: CI/CD SmartCampus
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  APP_ENV: production
+  PORT: "5000"
+  HOST_PORT: "5000"
+  LOG_LEVEL: INFO
+  GUNICORN_WORKERS: "2"
+
+jobs:
+  tests:
+    name: Calidad y tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Instalar dependencias
+        run: python -m pip install -r requirements.txt
+
+      - name: Ruff (calidad y formato)
+        run: |
+          ruff check .
+          ruff format --check .
+
+      - name: Tests
+        run: pytest -v
+
+  build:
+    name: Build y validacion de la imagen Docker
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Construir imagen
+        run: docker build -t smartcampus .
+
+      - name: Arrancar contenedor y esperar al healthcheck
+        run: |
+          docker run -d --name smartcampus-ci -p 5000:5000 -e SECRET_KEY=ci-only-not-a-secret smartcampus
+          for i in $(seq 1 30); do
+            status=$(docker inspect -f '{{.State.Health.Status}}' smartcampus-ci)
+            echo "healthcheck: $status"
+            [ "$status" = "healthy" ] && exit 0
+            sleep 2
+          done
+          docker logs smartcampus-ci
+          exit 1
+
+      - name: Validar /health con curl
+        run: curl --fail --silent --show-error http://localhost:5000/health
+
+      - name: Parar contenedor
+        if: always()
+        run: docker rm -f smartcampus-ci
+
+  deploy:
+    name: Despliegue (self-hosted)
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: self-hosted
+    concurrency:
+      group: deploy-smartcampus
+      cancel-in-progress: false
+    env:
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Crear .env (el secreto nunca se imprime)
+        shell: powershell
+        run: |
+          if ([string]::IsNullOrEmpty($env:SECRET_KEY)) { throw "Falta el Secret SECRET_KEY" }
+          $lines = @(
+            "APP_ENV=$env:APP_ENV",
+            "PORT=$env:PORT",
+            "HOST_PORT=$env:HOST_PORT",
+            "LOG_LEVEL=$env:LOG_LEVEL",
+            "GUNICORN_WORKERS=$env:GUNICORN_WORKERS",
+            "SECRET_KEY=$env:SECRET_KEY"
+          )
+          [System.IO.File]::WriteAllText("$PWD\.env", ($lines -join "`n") + "`n", (New-Object System.Text.UTF8Encoding($false)))
+
+      - name: Desplegar con docker compose
+        shell: powershell
+        run: docker compose up -d --build
+
+      - name: Verificar /health tras el despliegue
+        shell: powershell
+        run: |
+          $ok = $false
+          for ($i = 1; $i -le 30; $i++) {
+            try {
+              $r = Invoke-WebRequest -UseBasicParsing "http://localhost:$env:HOST_PORT/health"
+              if ($r.StatusCode -eq 200) { $ok = $true; Write-Host $r.Content; break }
+            } catch { Start-Sleep -Seconds 2 }
+          }
+          if (-not $ok) { docker compose logs backend; throw "El servicio no responde en /health" }
+
+      - name: Eliminar .env del workspace
+        if: always()
+        shell: powershell
+        run: Remove-Item -Force .env -ErrorAction SilentlyContinue
