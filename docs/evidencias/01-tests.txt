@@ -1,0 +1,71 @@
+# pytest -m unit
+============================= test session starts =============================
+platform win32 -- Python 3.13.3, pytest-8.3.3, pluggy-1.7.0 -- C:\Users\JUAMPE\.venvs\smartcampus\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\JUAMPE\AppData\Local\Claude-Data\claude_pzs8sxrjxfjjc\scratch-workspaces\39c0b2ac-8593-40b5-be07-f26351f743f9\54c6611d-2c31-48b1-a178-a725c39aa0d6\scratch-2026-11-01-6f77d5
+configfile: pytest.ini
+testpaths: tests
+collecting ... collected 48 items / 22 deselected / 26 selected
+
+tests/test_services.py::test_create_and_get_room PASSED                  [  3%]
+tests/test_services.py::test_delete_room PASSED                          [  7%]
+tests/test_services.py::test_delete_missing_room_raises PASSED           [ 11%]
+tests/test_services.py::test_invalid_capacity[0] PASSED                  [ 15%]
+tests/test_services.py::test_invalid_capacity[-5] PASSED                 [ 19%]
+tests/test_services.py::test_invalid_capacity[10] PASSED                 [ 23%]
+tests/test_services.py::test_invalid_capacity[None] PASSED               [ 26%]
+tests/test_services.py::test_invalid_capacity[True] PASSED               [ 30%]
+tests/test_services.py::test_invalid_capacity[3.5] PASSED                [ 34%]
+tests/test_services.py::test_valid_capacity PASSED                       [ 38%]
+tests/test_services.py::test_invalid_equipment PASSED                    [ 42%]
+tests/test_services.py::test_invalid_time_range[12:00-10:00] PASSED      [ 46%]
+tests/test_services.py::test_invalid_time_range[10:00-10:00] PASSED      [ 50%]
+tests/test_services.py::test_invalid_time_format[25:00] PASSED           [ 53%]
+tests/test_services.py::test_invalid_time_format[abc] PASSED             [ 57%]
+tests/test_services.py::test_invalid_time_format[9] PASSED               [ 61%]
+tests/test_services.py::test_invalid_time_format[None] PASSED            [ 65%]
+tests/test_services.py::test_time_normalization PASSED                   [ 69%]
+tests/test_services.py::test_overlaps_function PASSED                    [ 73%]
+tests/test_services.py::test_create_booking PASSED                       [ 76%]
+tests/test_services.py::test_booking_unknown_room PASSED                 [ 80%]
+tests/test_services.py::test_overlapping_booking_conflicts PASSED        [ 84%]
+tests/test_services.py::test_contiguous_booking_allowed PASSED           [ 88%]
+tests/test_services.py::test_same_time_other_date_or_room_allowed PASSED [ 92%]
+tests/test_services.py::test_delete_booking_and_missing PASSED           [ 96%]
+tests/test_services.py::test_deleting_room_removes_its_bookings PASSED   [100%]
+
+====================== 26 passed, 22 deselected in 0.76s ======================
+
+# pytest -m integration
+============================= test session starts =============================
+platform win32 -- Python 3.13.3, pytest-8.3.3, pluggy-1.7.0 -- C:\Users\JUAMPE\.venvs\smartcampus\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\JUAMPE\AppData\Local\Claude-Data\claude_pzs8sxrjxfjjc\scratch-workspaces\39c0b2ac-8593-40b5-be07-f26351f743f9\54c6611d-2c31-48b1-a178-a725c39aa0d6\scratch-2026-11-01-6f77d5
+configfile: pytest.ini
+testpaths: tests
+collecting ... collected 48 items / 26 deselected / 22 selected
+
+tests/test_bookings.py::test_create_and_list_booking PASSED              [  4%]
+tests/test_bookings.py::test_delete_booking PASSED                       [  9%]
+tests/test_bookings.py::test_booking_unknown_room_404 PASSED             [ 13%]
+tests/test_bookings.py::test_overlapping_booking_409 PASSED              [ 18%]
+tests/test_bookings.py::test_contiguous_booking_201 PASSED               [ 22%]
+tests/test_bookings.py::test_wrong_hours_422[12:00-10:00] PASSED         [ 27%]
+tests/test_bookings.py::test_wrong_hours_422[10:00-10:00] PASSED         [ 31%]
+tests/test_bookings.py::test_wrong_hours_422[xx-11:00] PASSED            [ 36%]
+tests/test_bookings.py::test_wrong_date_422 PASSED                       [ 40%]
+tests/test_bookings.py::test_delete_missing_booking_404 PASSED           [ 45%]
+tests/test_health.py::test_health PASSED                                 [ 50%]
+tests/test_health.py::test_unknown_route_returns_json_404 PASSED         [ 54%]
+tests/test_rooms.py::test_create_and_get_room PASSED                     [ 59%]
+tests/test_rooms.py::test_list_rooms PASSED                              [ 63%]
+tests/test_rooms.py::test_delete_room PASSED                             [ 68%]
+tests/test_rooms.py::test_invalid_capacity_returns_422[0] PASSED         [ 72%]
+tests/test_rooms.py::test_invalid_capacity_returns_422[-1] PASSED        [ 77%]
+tests/test_rooms.py::test_invalid_capacity_returns_422[x] PASSED         [ 81%]
+tests/test_rooms.py::test_missing_name_returns_422 PASSED                [ 86%]
+tests/test_rooms.py::test_invalid_json_returns_400 PASSED                [ 90%]
+tests/test_rooms.py::test_get_missing_room_404 PASSED                    [ 95%]
+tests/test_rooms.py::test_delete_missing_room_404 PASSED                 [100%]
+
+====================== 22 passed, 26 deselected in 1.17s ======================
