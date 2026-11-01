@@ -1,3 +1,5 @@
+name: smartcampus
+
 services:
   backend:
     build: .

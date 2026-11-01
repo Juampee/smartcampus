@@ -1,0 +1,40 @@
+=== docker compose up --build -d ===
+#14 resolving provenance for metadata file
+#14 DONE 0.0s
+ Image smartcampus Built 
+ Network smartcampus-net Creating 
+ Volume scratch-2026-11-01-6f77d5_smartcampus-data Creating 
+ Volume scratch-2026-11-01-6f77d5_smartcampus-data Creating 
+ Network smartcampus-net Creating 
+ Volume scratch-2026-11-01-6f77d5_smartcampus-data Created 
+ Volume scratch-2026-11-01-6f77d5_smartcampus-data Created 
+ Network smartcampus-net Created 
+ Network smartcampus-net Created 
+ Container smartcampus-backend Creating 
+ Container smartcampus-backend Created 
+ Container smartcampus-backend Starting 
+ Container smartcampus-backend Started 
+
+=== docker compose ps ===
+NAME                  IMAGE         COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+smartcampus-backend   smartcampus   "sh -c 'exec gunicor…"   backend   21 seconds ago   Up 21 seconds (healthy)   0.0.0.0:5000->5000/tcp, [::]:5000->5000/tcp
+
+=== health del contenedor ===
+healthy
+
+=== curl ===
+HTTP/1.1 200 OK
+{"env":"production","status":"ok"}
+
+{"capacidad":30,"edificio":"A","equipamiento":["proyector"],"id":1,"nombre":"Aula 1"}
+
+reserva 1 -> 201
+solapada    -> 409
+contigua    -> 201
+
+=== persistencia: reinicio del contenedor ===
+[{"capacidad":30,"edificio":"A","equipamiento":["proyector"],"id":1,"nombre":"Aula 1"}]
+
+
+=== usuario del proceso ===
+uid=1001(appuser) gid=999(appuser) groups=999(appuser)
